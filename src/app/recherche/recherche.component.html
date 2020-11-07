@@ -1,0 +1,9 @@
+<div class="row">
+    <form class="formulaire" (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <label for="entree"> Entrez le nom d'un artiste :</label> <br>
+        <input id="entree" type="text" name="entreeUtilisateur" class="input" ngModel required>
+        <button mat-raised-button color="primary" type="submit">
+            Rechercher
+        </button>
+    </form>
+</div>
