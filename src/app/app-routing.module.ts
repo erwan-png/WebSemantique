@@ -5,6 +5,7 @@ import { RechercheComponent } from './recherche/recherche.component';
 
 
 const routes: Routes = [
+  { path: '', component: RechercheComponent},
   { path: 'recherche', component: RechercheComponent},
   { path:'recherche-artiste/:nomArtiste', component: ArtisteComponent },
 ];
