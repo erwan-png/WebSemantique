@@ -1,4 +1,19 @@
 .bandeau {
     text-align: center;
-    background-color: blue;
+    background-color: #87CEEB;
+    height: 125px;
+    top: 0;
+    font-size: 20px;
+}
+
+.titre {
+    position: relative;
+    top: 45px;
+    font-size: 60px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.contenu {
+    background-color: #708090;
+    height: 100vh;
 }

@@ -4,5 +4,9 @@
 <div class="artist-bio">
 
   <h3>{{this.bio}}</h3>
+  <ng-container *ngFor="let album of photosAlbums">
+    <label for="image"> {{album.album}} :</label> <br>
+    <img id="image" [src]="album.url"> <br>
+  </ng-container>
 </div>
 
