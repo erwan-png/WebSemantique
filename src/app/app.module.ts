@@ -10,13 +10,15 @@ import { RechercheComponent } from './recherche/recherche.component';
 import { ArtisteComponent } from './artiste/artiste.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GenreComponent } from './genre/genre.component';
+import { ChansonComponent } from './chanson/chanson.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RechercheComponent,
     ArtisteComponent,
-    GenreComponent
+    GenreComponent,
+    ChansonComponent
   ],
   imports: [
     BrowserModule,
