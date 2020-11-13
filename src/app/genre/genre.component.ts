@@ -17,10 +17,15 @@ export interface Genre {
   styleUrls: ['./genre.component.scss']
 })
 export class GenreComponent implements OnInit {
+
   genre: Genre;
   redirect_url: string = 'http://localhost:4200/recherche-genre/';
   url: string = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org';
   nomGenre: string;
+  listArtists : string[] = [];
+  listBands: string[] = [];
+  listSongs: string[] = [];
+
 
   constructor(private route: ActivatedRoute,
               private httpClient: HttpClient) {
@@ -70,6 +75,53 @@ export class GenreComponent implements OnInit {
         fusionGenre: fGenreName,
         stylisticOriginGenre: sOriginName
       }
+    });
+
+    //Fetch related songs and artists info
+    const similarGroup =
+      'select distinct \n' +
+      '?name\n' +
+      'GROUP_CONCAT(DISTINCT ?artistsName; SEPARATOR="|") as ?artistsName \n' +
+      'GROUP_CONCAT(DISTINCT ?bandsName; SEPARATOR="|") as ?bandsName \n' +
+      'GROUP_CONCAT(DISTINCT ?singles; SEPARATOR="|") as ?singles \n' +
+      'where {\n' +
+      '{\n' +
+      '?genre a dbo:Genre .\n' +
+      '?genre rdfs:label ?name .\n' +
+      '?artists a dbo:MusicalArtist .\n' +
+      '?artists rdfs:label ?artistsName .\n' +
+      '?artists dbo:genre ?genres .\n' +
+      '?genres rdfs:label ?genresName .\n' +
+      'FILTER(?name = "' + this.nomGenre + '"@en && ?genresName = "' + this.nomGenre +'"@en && lang(?artistsName)="en") .\n' +
+      '}\n' +
+      'UNION\n' +
+      '{\n' +
+      '?genre a dbo:Genre .\n' +
+      '?genre rdfs:label ?name .\n' +
+      '?bands a dbo:Band .\n' +
+      '?bands rdfs:label ?bandsName .\n' +
+      '?bands dbo:genre ?genres .\n' +
+      '?genres rdfs:label ?genresName .\n' +
+      'FILTER(?name = "' + this.nomGenre + '"@en && ?genresName = "' + this.nomGenre +'"@en && lang(?bandsName)="en") .\n' +
+      '}\n' +
+      'UNION\n' +
+      '{\n' +
+      '?genre a dbo:Genre .\n' +
+      '?genre rdfs:label ?name .\n' +
+      '?single a dbo:Single.\n' +
+      '?single rdfs:label ?singles.\n' +
+      '?single dbo:genre ?singleGenre.\n' +
+      '?singleGenre rdfs:label ?singleGenreName.\n' +
+      'FILTER(?name = "' + this.nomGenre + '"@en && ?singleGenreName = "' + this.nomGenre +'"@en && lang(?singles)="en") .\n' +
+      '}\n' +
+      '}';
+    this.httpClient.get(this.url + '&query=' + encodeURIComponent(similarGroup) + '&format=json').subscribe((response) => {
+      const artists = ((response as any).results.bindings[0].artistsName.value).split('|');
+      const bands = ((response as any).results.bindings[0].bandsName.value).split('|');
+      const songs = ((response as any).results.bindings[0].singles.value).split('|');
+      this.listArtists = artists;
+      this.listBands = bands;
+      this.listSongs = songs;
     });
   }
 
