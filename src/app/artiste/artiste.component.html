@@ -1,17 +1,35 @@
-<div class="artist-name">
-  <h1>{{this.nomArtiste}}</h1>
+<div class="row">
+  <div class="artist-name">
+    <h1 class="nomArtiste">{{this.nomArtiste}}</h1>
+  </div>
+  <div class="artist-bio">
+    <div [style.float]="'left'">
+      <img *ngIf="imageArtiste?.length>0" [src]="imageArtiste">
+    </div>
+    <h3 [ngStyle]="{'padding-left.px': 340}">{{this.bio}}</h3>
+  </div> <br>
+  <div>
+    <ng-container *ngIf="albumsCharges | async">
+      <br>
+      <h3 [style.marginLeft.px]="60">Below the list of the albums of the artist : </h3>
+      <table class="infos-albums">
+        <tr *ngFor="let album of (albums | triAlbum)">
+          <td><h2>{{album.name}} ({{album.releaseDate | date}})</h2>
+          <img *ngIf="album.urlPhoto.length>0" id="image" [src]="album.urlPhoto">
+          <h3>{{album.genres.length>1?'Genre : '+album.genres:''}}</h3>
+          <h3>List of the titles of the ablum : </h3>
+          <ul>
+            <li *ngFor="let songTitle of album.titles">
+              {{songTitle}}
+            </li>
+          </ul>
+          </td>
+          <td [style.top]="0" [style.textAlign]="'center'"><h3 [style.textAlign]="'left'"> {{album.abstract}}</h3> <br> <br>
+            <iframe *ngIf="album.extraitMusique" [src]="album.extraitMusique" width="300" class="extraits-musiques"
+            height="250" frameborder="0" allowtransparency="true"></iframe>
+          </td>
+        </tr>
+      </table>
+    </ng-container> 
+  </div>
 </div>
-<div class="artist-bio">
-  <h3>{{this.bio}}</h3>
-</div>
-<div class="album" *ngFor="let album of albums">
-  <h2>{{album.name}} ({{album.releaseDate | date}})</h2>
-  <img id="image" [src]="album.urlPhoto"> <br>
-  <h3>Genre: {{album.genres}}</h3>
-  <h4> {{album.abstract}}</h4>
-  <ul>
-    <li *ngFor="let songTitle of album.titles">{{ songTitle }}
-    </li>
-  </ul>
-</div>
-

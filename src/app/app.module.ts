@@ -10,13 +10,16 @@ import { RechercheComponent } from './recherche/recherche.component';
 import { ArtisteComponent } from './artiste/artiste.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GenreComponent } from './genre/genre.component';
+import { TriAlbumPipe } from './tri-album.pipe';
+import {MatTableModule} from '@angular/material/table'; 
 
 @NgModule({
   declarations: [
     AppComponent,
     RechercheComponent,
     ArtisteComponent,
-    GenreComponent
+    GenreComponent,
+    TriAlbumPipe
   ],
   imports: [
     BrowserModule,
@@ -25,7 +28,8 @@ import { GenreComponent } from './genre/genre.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]
