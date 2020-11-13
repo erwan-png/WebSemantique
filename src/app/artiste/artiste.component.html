@@ -1,12 +1,17 @@
 <div class="artist-name">
-  <h1>{{this.nom}}</h1>
+  <h1>{{this.nomArtiste}}</h1>
 </div>
 <div class="artist-bio">
-
   <h3>{{this.bio}}</h3>
-  <ng-container *ngFor="let album of photosAlbums">
-    <label for="image"> {{album.album}} :</label> <br>
-    <img id="image" [src]="album.url"> <br>
-  </ng-container>
+</div>
+<div class="album" *ngFor="let album of albums">
+  <h2>{{album.name}} ({{album.releaseDate | date}})</h2>
+  <img id="image" [src]="album.urlPhoto"> <br>
+  <h3>Genre: {{album.genres}}</h3>
+  <h4> {{album.abstract}}</h4>
+  <ul>
+    <li *ngFor="let songTitle of album.titles">{{ songTitle }}
+    </li>
+  </ul>
 </div>
 
