@@ -1,1 +1,11 @@
-<p>genre works!</p>
+<h1>{{this.genre.name}}</h1>
+<h3>{{this.genre.bio}}</h3>
+<h4>Stylistic origin:</h4>
+<ul *ngFor="let sOrigin of this.genre.stylisticOriginGenre">
+  <li>
+    <a href="{{this.redirect_url+sOrigin}}">{{sOrigin}}</a>
+  </li>
+</ul>
+<h4>Sub genre: {{this.genre.subGenre}}</h4>
+<h4>Derivative genre: {{this.genre.derivativeGenre}}</h4>
+<h4>Fusion genre : {{this.genre.fusionGenre}}</h4>
