@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
+import {ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
 
 export interface Genre {
   name: string;
@@ -19,10 +19,10 @@ export interface Genre {
 export class GenreComponent implements OnInit {
 
   genre: Genre;
-  redirect_url: string = 'http://localhost:4200/recherche-genre/';
-  url: string = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org';
+  redirectUrl = 'http://localhost:4200/recherche-genre/';
+  url = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org';
   nomGenre: string;
-  listArtists : string[] = [];
+  listArtists: string[] = [];
   listBands: string[] = [];
   listSongs: string[] = [];
 
@@ -74,10 +74,10 @@ export class GenreComponent implements OnInit {
         subGenre: subGenreName,
         fusionGenre: fGenreName,
         stylisticOriginGenre: sOriginName
-      }
+      };
     });
 
-    //Fetch related songs and artists info
+    // Fetch related songs and artists info
     const similarGroup =
       'select distinct \n' +
       '?name\n' +
@@ -92,7 +92,7 @@ export class GenreComponent implements OnInit {
       '?artists rdfs:label ?artistsName .\n' +
       '?artists dbo:genre ?genres .\n' +
       '?genres rdfs:label ?genresName .\n' +
-      'FILTER(?name = "' + this.nomGenre + '"@en && ?genresName = "' + this.nomGenre +'"@en && lang(?artistsName)="en") .\n' +
+      'FILTER(?name = "' + this.nomGenre + '"@en && ?genresName = "' + this.nomGenre + '"@en && lang(?artistsName)="en") .\n' +
       '}\n' +
       'UNION\n' +
       '{\n' +
@@ -102,7 +102,7 @@ export class GenreComponent implements OnInit {
       '?bands rdfs:label ?bandsName .\n' +
       '?bands dbo:genre ?genres .\n' +
       '?genres rdfs:label ?genresName .\n' +
-      'FILTER(?name = "' + this.nomGenre + '"@en && ?genresName = "' + this.nomGenre +'"@en && lang(?bandsName)="en") .\n' +
+      'FILTER(?name = "' + this.nomGenre + '"@en && ?genresName = "' + this.nomGenre + '"@en && lang(?bandsName)="en") .\n' +
       '}\n' +
       'UNION\n' +
       '{\n' +
@@ -112,7 +112,7 @@ export class GenreComponent implements OnInit {
       '?single rdfs:label ?singles.\n' +
       '?single dbo:genre ?singleGenre.\n' +
       '?singleGenre rdfs:label ?singleGenreName.\n' +
-      'FILTER(?name = "' + this.nomGenre + '"@en && ?singleGenreName = "' + this.nomGenre +'"@en && lang(?singles)="en") .\n' +
+      'FILTER(?name = "' + this.nomGenre + '"@en && ?singleGenreName = "' + this.nomGenre + '"@en && lang(?singles)="en") .\n' +
       '}\n' +
       '}';
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(similarGroup) + '&format=json').subscribe((response) => {
