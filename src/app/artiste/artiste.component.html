@@ -2,7 +2,14 @@
   <h1>{{this.nomArtiste}}</h1>
 </div>
 <div class="artist-bio">
-
   <h3>{{this.bio}}</h3>
+</div>
+<div class="album" *ngFor="let album of albums">
+  <h2>{{album.name  }} ({{album.releaseDate | date}})</h2>
+  <h3>Genre: {{album.genres}}</h3>
+  <h4> {{album.abstract}}</h4>
+  <ul>
+    <li *ngFor="let songTitle of album.titles">{{ songTitle }}</li>
+  </ul>
 </div>
 

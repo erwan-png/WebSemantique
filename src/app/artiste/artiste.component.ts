@@ -6,10 +6,15 @@ import {HttpClient} from '@angular/common/http';
 export interface Album {
   name: string;
   abstract: string;
-  genre: string;
+  genres: string[];
   releaseDate: Date;
-  titles: string;
+  titles: string[];
 }
+
+export interface Artist {
+  name: string;
+}
+
 
 
 @Component({
@@ -92,19 +97,19 @@ export class ArtisteComponent implements OnInit {
             + '}'
             + '}';
           let resume: string;
-          let genre: string;
+          let genres: string [];
           let releaseDate: Date;
-          let titles: string;
+          let titles: string[];
           this.httpClient.get(this.url + '&query=' + encodeURIComponent(albumDataRequest) + '&format=json').subscribe((response) => {
               if (!((response as any).results.bindings[0] === undefined)) {
                 resume = (response as any).results.bindings[0].abstract.value;
-                genre = (response as any).results.bindings[0].genreName.value;
+                genres = ((response as any).results.bindings[0].genreName.value).split('|');
                 releaseDate = (response as any).results.bindings[0].releaseDate.value;
-                titles = (response as any).results.bindings[0].titles.value;
+                titles = ((response as any).results.bindings[0].titles.value).split('|');
                 const album: Album = {
                   name: albumName,
                   abstract: resume,
-                  genre: genre,
+                  genres: genres,
                   releaseDate: releaseDate,
                   titles: titles
                 };
@@ -115,6 +120,7 @@ export class ArtisteComponent implements OnInit {
         }
       }
     );
+    console.log(this.albums);
   }
 
 }
