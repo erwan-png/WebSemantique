@@ -8,7 +8,7 @@ export interface Song{
   bio: string;
   releaseDate: Date;
   genres: string[];
-  relatedAlbum: string;
+  relatedAlbum: string [];
   artists: string [];
   writers: string;
 }
@@ -34,6 +34,7 @@ export class ChansonComponent implements OnInit {
       '?bio\n' +
       '?date\n' +
       '?album \n' +
+      'GROUP_CONCAT(DISTINCT ?album; SEPARATOR="|") as ?album\n' +
       'GROUP_CONCAT(DISTINCT ?genres; SEPARATOR="|") as ?genres\n' +
       'GROUP_CONCAT(DISTINCT ?artists ; SEPARATOR="|") as ?artists \n' +
       'GROUP_CONCAT(DISTINCT ?writers ; SEPARATOR="|") as ?writers \n' +
