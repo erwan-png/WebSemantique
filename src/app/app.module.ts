@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GenreComponent } from './genre/genre.component';
 import { TriAlbumPipe } from './tri-album.pipe';
 import {MatTableModule} from '@angular/material/table'; 
+import { ChansonComponent } from './chanson/chanson.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {MatTableModule} from '@angular/material/table';
     RechercheComponent,
     ArtisteComponent,
     GenreComponent,
-    TriAlbumPipe
+    TriAlbumPipe,
+    ChansonComponent
   ],
   imports: [
     BrowserModule,
