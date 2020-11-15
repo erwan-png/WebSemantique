@@ -18,7 +18,14 @@ export interface Genre {
 })
 export class GenreComponent implements OnInit {
 
-  genre: Genre;
+  genre: Genre = {
+    name: '',
+    bio: '',
+    derivativeGenre: [],
+    subGenre: [],
+    fusionGenre: [],
+    stylisticOriginGenre: []
+  };
   redirectUrl = 'http://localhost:4200/recherche-genre/';
   url = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org';
   nomGenre: string;
@@ -45,20 +52,20 @@ export class GenreComponent implements OnInit {
       '?bio ' +
       'where {' +
       '?genre a dbo:Genre .' +
-      '?genre rdfs:label ?name .' +
+      '?genre foaf:name ?name .' +
       '?genre dbo:abstract ?bio .' +
+      '?genre dbo:musicSubgenre ?subGenre.' +
+      '?subGenre rdfs:label ?subGenreName .' +
+      '?genre dbo:stylisticOrigin ?sOrigin .' +
+      '?sOrigin rdfs:label ?sOriginName . ' +
       'optional{' +
       '?genre dbo:derivative ?dGenre .' +
       '?dGenre rdfs:label ?dGenreName .' +
-      '?genre dbo:stylisticOrigin ?sOrigin .' +
-      '?sOrigin rdfs:label ?sOriginName . ' +
       '?genre dbo:musicFusionGenre ?fGenre .' +
       '?fGenre rdfs:label ?fGenreName .' +
-      '?genre dbo:musicSubgenre ?subGenre.' +
-      '?subGenre rdfs:label ?subGenreName .' +
-      'FILTER(lang(?dGenreName)="en" && lang(?sOriginName)="en" && lang(?fGenreName)="en" && lang(?subGenreName)="en") .' +
+      'FILTER(lang(?dGenreName)="en" && lang(?fGenreName)="en" ) .' +
       '}' +
-      'FILTER(?name = "' + this.nomGenre + '"@en && lang(?bio)="en") .' +
+      'FILTER(?name = "' + this.nomGenre + '"@en && lang(?bio)="en" && lang(?subGenreName)="en" && lang(?sOriginName )="en") .' +
       '}';
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(genreRequest) + '&format=json').subscribe((response) => {
       const genreName = (response as any).results.bindings[0].name.value;
@@ -67,6 +74,7 @@ export class GenreComponent implements OnInit {
       const dGenreName = ((response as any).results.bindings[0].dGenreName.value).split('|');
       const sOriginName = ((response as any).results.bindings[0].sOriginName.value).split('|');
       const fGenreName = ((response as any).results.bindings[0].fGenreName.value).split('|');
+      console.log(subGenreName, dGenreName, sOriginName, fGenreName);
       this.genre = {
         name: genreName,
         bio: abstract,
@@ -141,4 +149,3 @@ export class GenreComponent implements OnInit {
   }
 
 }
-
