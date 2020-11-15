@@ -4,9 +4,48 @@
   </div>
   <div class="artist-bio">
     <div [style.float]="'left'">
-      <img *ngIf="imageArtiste?.length>0" [src]="imageArtiste">
+      <div>
+        <img *ngIf="image?.length>0" [src]="image">
+      </div>
+      <div *ngIf="band">
+        <h2 [style.maxWidth.px]="320">Start year : {{band.anneeDebut}}</h2>
+        <h2 [style.maxWidth.px]="320">{{band.lieuOrigine?'Origin place : '+band.lieuOrigine:''}}</h2>
+        <h2 [style.maxWidth.px]="320">{{band.villeOrigine?'Hometown : '+band.villeOrigine:''}}</h2>
+        <h2 [style.maxWidth.px]="320">Genres : 
+          <h3 *ngFor="let g of band.genresMusicaux" [style.maxWidth.px]="300">
+            <a [href]="'/recherche-genre/'+g">{{g}}</a>
+            {{artiste?.genresMusicaux.indexOf(g)!==artiste?.genresMusicaux.length-1?',':''}}
+          </h3>
+        </h2>
+      </div>
+      <div *ngIf="artiste">
+        <h2 [style.maxWidth.px]="320">Birth name : {{artiste.nomNaissance}}</h2>
+        <h2 [style.maxWidth.px]="320">Birth date : {{artiste.anneeNaissance}}</h2>
+        <h2 [style.maxWidth.px]="320">{{artiste.nbEnfant?artiste.nbEnfant + ' Children':''}}</h2>
+        <h2 [style.maxWidth.px]="320">{{artiste.epouse?'Spouse : '+artiste.epouse:''}}</h2>
+        <h2 [style.maxWidth.px]="320">Genres : 
+          <h3 *ngFor="let g of artiste.genresMusicaux" 
+              [ngStyle]="{'max-width':'300px', 'margin-bottom':'-5px'}">
+              <a [href]="'/recherche-genre/'+g">{{g}}</a>
+          </h3>
+        </h2>
+      </div>
+      <div>
+        <h2 [style.maxWidth.px]="320" *ngIf="artistesAssocies?.length>1">Associated artist : 
+          <h3 *ngFor="let a of artistesAssocies" 
+              [ngStyle]="{'max-width':'300px', 'margin-bottom':'-5px'}">
+          <a [href]="'/recherche-artiste/'+a">{{a}}</a>
+          </h3>
+        </h2>
+        <h2 [style.maxWidth.px]="320" *ngIf="bandesAssocies?.length>1">Associated band : 
+          <h3 *ngFor="let b of bandesAssocies" 
+              [ngStyle]="{'max-width':'300px', 'margin-bottom':'-5px'}">
+              <a [href]="'/recherche-artiste/'+b">{{b}}</a>
+          </h3>
+        </h2>
+      </div>
     </div>
-    <h3 [ngStyle]="{'padding-left.px': 340}">{{this.bio}}</h3>
+    <h3 [ngStyle]="{'padding-left.px': 340}">{{artiste?artiste?.bio:band?.bio}}</h3> <br>
   </div> <br>
   <div>
     <ng-container *ngIf="albumsCharges | async">
@@ -20,7 +59,7 @@
           <h3>List of the titles of the ablum : </h3>
           <ul>
             <li *ngFor="let songTitle of album.titles">
-              {{songTitle}}
+              <a [href]="'/recherche-chanson/'+songTitle">{{songTitle}}</a>
             </li>
           </ul>
           </td>

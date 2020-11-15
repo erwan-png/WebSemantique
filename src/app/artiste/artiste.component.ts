@@ -13,9 +13,26 @@ export interface Album {
   extraitMusique: SafeResourceUrl;
 }
 
-export interface Artist {
+export interface Artiste {
   name: string;
   bio: string;
+  commentaire: string;
+  nomNaissance: string;
+  nbrEnfant: number;
+  epouse: string;
+  anneeNaissance: Date;
+  genresMusicaux: string[];
+  image: string;
+}
+
+export interface Band {
+  name: string;
+  bio: string;
+  commentaire: string;
+  anneeDebut: Date;
+  lieuOrigine: string;
+  villeOrigine: string;
+  genresMusicaux: string[];
 }
 
 @Component({
@@ -34,11 +51,13 @@ export class ArtisteComponent implements OnInit {
     'Accept': 'application/json'
   });
 
-  bio: string;
-  nom: string;
-  imageArtiste: string;
+  artiste: Artiste = null;
+  band: Band = null;
+  artistesAssocies: any[];
+  bandesAssocies: any[];
   albums: Array<Album> = [];
   albumsCharges: Promise<Boolean>;
+  image: string;
 
   constructor(private route: ActivatedRoute,
               private httpClient: HttpClient,
@@ -50,12 +69,13 @@ export class ArtisteComponent implements OnInit {
       "Authorization": "Basic ZDYyOTQyNjA3MmRmNDI4ZTg5YzJkMDJmNjhiOTEyYWU6OTIzMTVmMGEzY2M1NGFiOTg0NWRlNGNhYTg5MGZjMTA=",
       "Content-Type": "application/x-www-form-urlencoded",
     });
-    this.httpClient.post('https://accounts.spotify.com/api/token','grant_type=client_credentials', {headers:headersSpotify}).toPromise().then((response) => {
+    this.httpClient.post('https://accounts.spotify.com/api/token','grant_type=client_credentials', {headers:headersSpotify}).toPromise()
+    .then((response) => {
       this.bearerToken = (response as any).access_token;
       this.headers = this.headers.append('Authorization',`Bearer ${this.bearerToken}`);
       return this.bearerToken;
     })
-    .then((value) => this.initialiserApplication())
+    .then(() => this.initialiserApplication())
     .catch((error) => console.log('Erreur',error));
     
   }
@@ -63,39 +83,121 @@ export class ArtisteComponent implements OnInit {
     /* Initializing variables and request */
     this.nomArtiste = this.route.snapshot.params.nomArtiste;
 
+    let nom: string[] = this.nomArtiste.split(' ');
+    for(let mot of nom) {
+      nom[nom.indexOf(mot)] = mot.charAt(0).toUpperCase() + mot.substring(1).toLowerCase();
+    }
+    this.nomArtiste = '';
+    for(let mot of nom) {
+      this.nomArtiste += mot;
+      if(!(nom.indexOf(mot) === nom.length-1))
+        this.nomArtiste += ' ';
+    }
+
     const urlSpotifyArtist: string = 'https://api.spotify.com/v1/search?q=%20artist%3A'+ this.nomArtiste +'&type=artist&limit=1';
     //Fetch Image of artist : 
     this.httpClient.get(urlSpotifyArtist, {headers: this.headers})
     .subscribe((response) => {
-      const urlImage = (response as any).artists.items[0]?.images[1].url;
+      const urlImage = (response as any).artists.items[0]?.images[1]?.url;
       if(urlImage)
-        this.imageArtiste = urlImage;
+        this.image = urlImage;
     },
     (error) => console.log('Erreur : ' + error.message));
 
     // Fetching artist personal data
     const artisteRequete: string =
-      'select distinct ?name ?bio where {'
-      + '{'
-      + '?artiste a dbo:MusicalArtist .'
-      + '?artiste foaf:name ?name .'
-      + '?artiste dbo:abstract ?bio .'
-      + 'FILTER(?name = "' + this.nomArtiste + '"@en && lang(?bio)="en" ).'
-      + '}'
-      + 'UNION'
+        'select distinct ?artiste ?name ?bio ?comment ?anneedebut ?lieuorigine ?villeorigine ?nomNaissance '
+      + '?anneeNaissance ?nbenfants ?epouse GROUP_CONCAT(DISTINCT ?Genre_Music; SEPARATOR="|") AS ?genres '
+      + 'where {'
       + '{'
       + '?artiste a dbo:Band .'
       + '?artiste foaf:name ?name .'
       + '?artiste dbo:abstract ?bio .'
-      + 'FILTER(?name = "' + this.nomArtiste + '"@en && lang(?bio)="en" ).'
+      + '?artiste rdfs:comment ?comment.'
+      + '?artiste dbo:activeYearsStartYear ?anneedebut.'
+      + '?artiste dbo:genre ?Genre.'
+      + '?Genre rdfs:label ?Genre_Music.'
+      + 'FILTER(?name = "' + this.nomArtiste + '"@en && lang(?bio)="en" && lang(?comment)="en" && lang(?Genre_Music)="en" ).'
+      + 'optional{?artiste dbp:origin ?lieuorigine}.'
+      + 'optional{?artiste dbo:hometown ?ville .'
+      + '?ville foaf:name ?villeorigine .'
+      + 'FILTER(lang(?villeorigine)="en"). }.'
+      + '}'
+      + 'UNION '
+      + '{'
+      + '?artiste a dbo:MusicalArtist .'
+      + '?artiste foaf:name ?name .'
+      + '?artiste dbo:abstract ?bio .'
+      + '?artiste rdfs:comment ?comment.'
+      + '?artiste dbo:birthDate ?anneeNaissance .'
+      + '?album dbo:artist ?artiste.'
+      + '?album dbo:genre ?genre_album.'
+      + '?genre_album rdfs:label ?Genre_Music.'
+      + 'FILTER(?name = "' + this.nomArtiste + '"@en && lang(?bio)="en" && lang(?comment)="en" && lang(?Genre_Music)="en").'
+      + 'optional{?artiste dbo:birthName ?nomNaissance}.'
+      + 'optional{?artiste dbp:spouse ?epouse}.'
+      + 'optional{?artiste dbp:children ?nbenfants}.'
       + '}'
       + '}';
 
     // Deserialization artist data into variables
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(artisteRequete) + '&format=json').subscribe((response) => {
-        this.bio = (response as any).results.bindings[0].bio.value;
+        const reponse = (response as any).results.bindings[0];
+        if(reponse?.anneedebut) {
+          this.band = {
+            name: reponse.name.value,
+            bio: reponse.bio.value,
+            commentaire: reponse.comment.value,
+            anneeDebut: reponse.anneedebut.value,
+            lieuOrigine: reponse.lieuorigine?reponse.lieuorigine.value:null,
+            villeOrigine: reponse.villeorigine?reponse.villeorigine.value:null,
+            genresMusicaux: reponse.genres.value.split('|')
+          };
+        } else if (reponse?.anneeNaissance) {
+          this.artiste = {
+            name: reponse.name.value,
+            bio: reponse.bio.value,
+            commentaire: reponse.comment.value,
+            nomNaissance: reponse.nomNaissance?reponse.nomNaissance.value:null,
+            nbrEnfant: reponse.nbenfants?reponse.nbenfants.value:null,
+            epouse: reponse.epouse?reponse.epouse.value:null,
+            anneeNaissance: reponse.anneeNaissance.value,
+            genresMusicaux: reponse.genres.value.split('|'),
+            image: reponse.image?reponse.image:null
+          };
+        }
       }
     );
+
+    //Fetching associated band and artist
+    const associationRequete: string = 
+        'select distinct '
+      + 'GROUP_CONCAT(DISTINCT ?nameAssociatedArtist; SEPARATOR="|") AS ?nameAssociatedArtist '
+      + 'GROUP_CONCAT(DISTINCT ?bandName; SEPARATOR="|") AS ?bandName '
+      + 'where {'
+      + '{'
+      + '?groupe a dbo:Band .'
+      + '?groupe foaf:name ?bandName .'
+      + '?groupe dbo:associatedBand ?artisteAssocie .'
+      + '?artisteAssocie foaf:name ?inputArtiste .'
+      + 'FILTER(?inputArtiste = "Katy Perry"@en).'
+      + '}'
+      + 'UNION'
+      + '{'
+      + '?artiste a dbo:MusicalArtist .'
+      + '?artiste foaf:name ?nameAssociatedArtist .'
+      + '?artiste dbo:associatedBand ?artisteAssocie .'
+      + '?artisteAssocie foaf:name ?inputArtiste .'
+      + 'FILTER(?inputArtiste = "Katy Perry"@en).'
+      + '}'
+      + '}';
+
+    this.httpClient.get(this.url + '&query=' + encodeURIComponent(associationRequete) + '&format=json').subscribe(
+    (response) => {
+      const reponse = (response as any).results.bindings[0];
+      this.bandesAssocies = reponse.bandName.value.split('|').slice(0,10);
+      this.artistesAssocies = reponse.nameAssociatedArtist.value.split('|').slice(0,10);
+    });
 
     // Fetching album data
     const albumListeRequete: string =
@@ -127,7 +229,7 @@ export class ArtisteComponent implements OnInit {
           + '?album dbp:title ?title .'
           + '?album dbo:artist ?ar .'
           + '?ar foaf:name ?artiste .'
-          + 'FILTER(isLiteral(?title) && ?albumName = "' + albumName + '"@en && lang(?abstract)="en" && ?artiste = "'+ this.nomArtiste +'@en").'
+          + 'FILTER(isLiteral(?title) && ?albumName = "' + albumName + '"@en && lang(?abstract)="en" && ?artiste = "'+ this.nomArtiste +'"@en).'
           + 'optional {'
           + '?album dbo:genre ?genre .'
           + '?genre rdfs:label ?genreName .'
@@ -145,7 +247,7 @@ export class ArtisteComponent implements OnInit {
           + '?titleType foaf:name ?title.'
           + '?album dbo:artist ?ar .'
           + '?ar foaf:name ?artiste .'
-          + 'FILTER(?albumName = "' + albumName + '"@en && lang(?abstract)="en" && ?artiste = "' + this.nomArtiste +'@en").'
+          + 'FILTER(?albumName = "' + albumName + '"@en && lang(?abstract)="en" && ?artiste = "' + this.nomArtiste +'"@en).'
           + 'optional{'
           + '?album dbo:genre ?genre .'
           + '?genre rdfs:label ?genreName .'
@@ -161,7 +263,6 @@ export class ArtisteComponent implements OnInit {
         acc++;
 
         this.httpClient.get(this.url + '&query=' + encodeURIComponent(albumDataRequest) + '&format=json').subscribe((response) => {
-          console.log(albumName,response)
           if (!((response as any).results.bindings[0] === undefined)) {
             resume = (response as any).results.bindings[0].abstract.value;
             genres = ((response as any).results.bindings[0].genreName.value).split('|');
@@ -196,5 +297,4 @@ export class ArtisteComponent implements OnInit {
       }
     });
   }
-}
-
+} 

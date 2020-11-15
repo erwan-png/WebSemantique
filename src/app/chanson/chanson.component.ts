@@ -33,7 +33,6 @@ export class ChansonComponent implements OnInit {
       '?duration\n' +
       '?bio\n' +
       '?date\n' +
-      '?album \n' +
       'GROUP_CONCAT(DISTINCT ?album; SEPARATOR="|") as ?album\n' +
       'GROUP_CONCAT(DISTINCT ?genres; SEPARATOR="|") as ?genres\n' +
       'GROUP_CONCAT(DISTINCT ?artists ; SEPARATOR="|") as ?artists \n' +
@@ -64,7 +63,7 @@ export class ChansonComponent implements OnInit {
       const duration = (response as any).results.bindings[0].duration.value;
       const genres = ((response as any).results.bindings[0].genres.value).split('|');
       const writers = ((response as any).results.bindings[0].writers.value).split('|');
-      let albums = '';
+      let albums = [''];
       if ((response as any).results.bindings[0].album !== undefined){
         albums = ((response as any).results.bindings[0].album.value).split('|');
       }
