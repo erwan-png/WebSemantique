@@ -1,8 +1,10 @@
-<h1>{{this.chanson.name}}</h1>
-<h2> {{this.chanson.releaseDate | date}}  ,length : {{this.chanson.duration}} s</h2>
-<h2>{{this.chanson.bio}}</h2>
-<p>Genres : {{this.chanson.genres}}</p>
-<p>Artists: {{this.chanson.artists}}</p>
-<p>Writers: {{this.chanson.writers}}</p>
-<p>Related Albums: {{this.chanson.relatedAlbum}}</p>
+<div *ngFor="let chanson of this.chansons">
+  <h1>{{chanson.name}}</h1>
+  <h2> Release date :{{chanson.releaseDate | date}}  ,length : {{chanson.duration}} s</h2>
+  <h2>{{chanson.bio}}</h2>
+  <p>Genres : {{chanson.genres}}</p>
+  <p>Artists: {{chanson.artists}}</p>
+  <p>Writers: {{chanson.writers}}</p>
+</div>
+
 
