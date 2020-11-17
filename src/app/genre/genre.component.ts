@@ -26,7 +26,10 @@ export class GenreComponent implements OnInit {
     fusionGenre: [],
     stylisticOriginGenre: []
   };
-  redirectUrl = 'http://localhost:4200/recherche-genre/';
+  redirectGenreUrl = 'http://localhost:4200/recherche-genre/';
+  redirectSongUrl = 'http://localhost:4200/recherche-chanson/';
+  redirectArtisteUrl = 'http://localhost:4200/recherche-artiste/';
+
   url = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org';
   nomGenre: string;
   listArtists: string[] = [];
@@ -54,18 +57,18 @@ export class GenreComponent implements OnInit {
       '?genre a dbo:Genre .' +
       '?genre foaf:name ?name .' +
       '?genre dbo:abstract ?bio .' +
-      '?genre dbo:musicSubgenre ?subGenre.' +
-      '?subGenre rdfs:label ?subGenreName .' +
       '?genre dbo:stylisticOrigin ?sOrigin .' +
       '?sOrigin rdfs:label ?sOriginName . ' +
       'optional{' +
+      '?genre dbo:musicSubgenre ?subGenre.' +
+      '?subGenre rdfs:label ?subGenreName .' +
       '?genre dbo:derivative ?dGenre .' +
       '?dGenre rdfs:label ?dGenreName .' +
       '?genre dbo:musicFusionGenre ?fGenre .' +
       '?fGenre rdfs:label ?fGenreName .' +
-      'FILTER(lang(?dGenreName)="en" && lang(?fGenreName)="en" ) .' +
+      'FILTER(lang(?dGenreName)="en" && lang(?fGenreName)="en" && lang(?subGenreName)="en").' +
       '}' +
-      'FILTER(?name = "' + this.nomGenre + '"@en && lang(?bio)="en" && lang(?subGenreName)="en" && lang(?sOriginName )="en") .' +
+      'FILTER(?name = "' + this.nomGenre + '"@en && lang(?bio)="en" && lang(?sOriginName )="en") .' +
       '}';
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(genreRequest) + '&format=json').subscribe((response) => {
       const genreName = (response as any).results.bindings[0].name.value;
