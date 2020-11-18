@@ -1,6 +1,6 @@
 <div *ngFor="let chanson of this.chansons">
-  <h1 style="text-align: center">{{chanson.name}}</h1>
-  <h2 style="text-align: center"> Release date :{{chanson.releaseDate | date}} - {{chanson.duration}} s</h2>
+  <h1 style="text-align: center">{{chanson.name}} ({{chanson.releaseDate | date}})</h1>
+  <h2 style="text-align: center">Duration {{chanson.duration}} s</h2>
   <h2 style="margin-left: 200px;margin-right: 200px">{{chanson.bio}}</h2>
 
   <!-- Related albums -->
@@ -15,7 +15,7 @@
   <div style="margin: 20px 200px;">
     <span style="font-size: 20px">Genres: </span>
     <div *ngFor="let genre of chanson.genres" style="display:inline-block;font-size: 18px">
-      <a>{{genre}}, </a>
+      <a href="{{this.redirectGenreUrl + genre}}">{{genre}}, </a>
     </div>
   </div>
 
@@ -23,7 +23,7 @@
   <div style="margin: 20px 200px;">
     <span style="font-size: 20px">Artists: </span>
     <div *ngFor="let artist of chanson.artists" style="display:inline-block;font-size: 18px">
-      <a>{{artist}}, </a>
+      <a href="{{this.redirectArtisteUrl + artist}}">{{artist}}, </a>
     </div>
   </div>
 
@@ -31,7 +31,7 @@
   <div style="margin: 20px 200px;">
     <span style="font-size: 20px">Writers: </span>
     <div *ngFor="let writer of chanson.writers" style="display:inline-block;font-size: 18px">
-      <a href="">{{writer}}, </a>
+      <a href="{{this.redirectArtisteUrl + writer}}">{{writer}}, </a>
     </div>
   </div>
 </div>
