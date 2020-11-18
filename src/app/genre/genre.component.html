@@ -1,15 +1,61 @@
-<h1>{{this.genre.name}}</h1>
-<h3>{{this.genre.bio}}</h3>
-<h4>Stylistic origin:</h4>
-<ul *ngFor="let sOrigin of this.genre.stylisticOriginGenre">
-  <li>
-    <a href="{{this.redirectUrl+sOrigin}}">{{sOrigin}}</a>
-  </li>
-</ul>
-<h4>Sub genre: {{this.genre.subGenre}}</h4>
-<h4>Derivative genre: {{this.genre.derivativeGenre}}</h4>
-<h4>Fusion genre : {{this.genre.fusionGenre}}</h4>
+<h1 style="text-align: center;font-size: 40px; margin-top: 50px;margin-bottom: 50px">{{this.genre.name}}</h1>
+<h2 style="margin-left: 200px;margin-right: 200px">{{this.genre.bio}}</h2>
 
-<h5 *ngFor="let artist of listArtists">{{artist}}</h5>
-<h5> Similar bands: {{this.listBands}}</h5>
-<h5> Similar songs: {{this.listSongs}}</h5>
+
+<!-- Similar stylistic origin -->
+<div style="margin: 20px 200px;">
+  <span style="font-size: 20px">Similar Stylistic origin: </span>
+  <div *ngFor="let sOrigin of this.genre.stylisticOriginGenre" style="display:inline-block;font-size: 18px">
+    <a href="{{this.redirectGenreUrl+sOrigin}}">{{sOrigin}},</a>
+  </div>
+</div>
+
+<!-- sub genre -->
+<div *ngIf="genre.subGenre">
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Sub genre: </span>
+    <div *ngFor="let subGenre of this.genre.subGenre" style="display:inline-block;font-size: 18px">
+      <a href="{{this.redirectGenreUrl+subGenre}}">{{subGenre}},</a>
+    </div>
+  </div>
+</div>
+
+<!-- derivative genre -->
+<div style="margin: 20px 200px;">
+  <span style="font-size: 20px">Derivative genre: </span>
+  <div *ngFor="let derivativeGenre of this.genre.derivativeGenre" style="display:inline-block;font-size: 18px">
+    <a href="{{this.redirectGenreUrl+derivativeGenre}}">{{derivativeGenre}},</a>
+  </div>
+</div>
+
+<!-- fusion genre -->
+<div style="margin: 20px 200px;">
+  <span style="font-size: 20px">Sub genre: </span>
+  <div *ngFor="let fusionGenre of this.genre.fusionGenre" style="display:inline-block;font-size: 18px">
+    <a href="{{this.redirectGenreUrl+fusionGenre}}">{{fusionGenre}},</a>
+  </div>
+</div>
+
+<!-- Similar artists -->
+<div style="margin: 20px 200px;">
+  <span style="font-size: 20px">Similar artists: </span>
+  <div *ngFor="let artist of listArtists" style="display:inline-block;font-size: 18px">
+    <a href="{{this.redirectArtisteUrl+artist}}">{{artist}},</a>
+  </div>
+</div>
+
+<!-- Similar bands -->
+<div style="margin: 20px 200px;">
+  <span style="font-size: 20px">Similar bands: </span>
+  <div *ngFor="let band of listBands" style="display:inline-block;font-size: 18px">
+    <a href="{{this.redirectArtisteUrl+band}}">{{band}},</a>
+  </div>
+</div>
+
+<!-- Similar songs -->
+<div style="margin: 20px 200px;">
+  <span style="font-size: 20px">Similar songs: </span>
+  <div *ngFor="let song of listSongs" style="display:inline-block;font-size: 18px">
+    <a href="{{this.redirectSongUrl+song}}">{{song}},</a>
+  </div>
+</div>
