@@ -11,10 +11,12 @@
 </div>
 
 <!-- sub genre -->
-<div style="margin: 20px 200px;">
-  <span style="font-size: 20px">Sub genre: </span>
-  <div *ngFor="let subGenre of this.genre.subGenre" style="display:inline-block;font-size: 18px">
-    <a href="{{this.redirectGenreUrl+subGenre}}">{{subGenre}},</a>
+<div *ngIf="genre.subGenre">
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Sub genre: </span>
+    <div *ngFor="let subGenre of this.genre.subGenre" style="display:inline-block;font-size: 18px">
+      <a href="{{this.redirectGenreUrl+subGenre}}">{{subGenre}},</a>
+    </div>
   </div>
 </div>
 
@@ -33,8 +35,6 @@
     <a href="{{this.redirectGenreUrl+fusionGenre}}">{{fusionGenre}},</a>
   </div>
 </div>
-
-
 
 <!-- Similar artists -->
 <div style="margin: 20px 200px;">
@@ -59,4 +59,3 @@
     <a href="{{this.redirectSongUrl+song}}">{{song}},</a>
   </div>
 </div>
-
