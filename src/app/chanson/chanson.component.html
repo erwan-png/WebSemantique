@@ -1,10 +1,47 @@
 <div *ngFor="let chanson of this.chansons">
-  <h1>{{chanson.name}}</h1>
-  <h2> Release date :{{chanson.releaseDate | date}}  ,length : {{chanson.duration}} s</h2>
-  <h2>{{chanson.bio}}</h2>
-  <p>Genres : {{chanson.genres}}</p>
-  <p>Artists: {{chanson.artists}}</p>
-  <p>Writers: {{chanson.writers}}</p>
+  <h1 style="text-align: center">{{chanson.name}}</h1>
+  <h2 style="text-align: center"> Release date :{{chanson.releaseDate | date}} - {{chanson.duration}} s</h2>
+  <h2 style="margin-left: 200px;margin-right: 200px">{{chanson.bio}}</h2>
+
+  <!-- Related albums -->
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Related albums: </span>
+    <div *ngFor="let albumsName of chanson.relatedAlbum" style="display:inline-block;font-size: 18px">
+      {{albumsName}}
+    </div>
+  </div>
+
+  <!-- Genres -->
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Genres: </span>
+    <div *ngFor="let genre of chanson.genres" style="display:inline-block;font-size: 18px">
+      <a>{{genre}}, </a>
+    </div>
+  </div>
+
+  <!-- Artists -->
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Artists: </span>
+    <div *ngFor="let artist of chanson.artists" style="display:inline-block;font-size: 18px">
+      <a>{{artist}}, </a>
+    </div>
+  </div>
+
+  <!-- Writers -->
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Writers: </span>
+    <div *ngFor="let writer of chanson.writers" style="display:inline-block;font-size: 18px">
+      <a href="">{{writer}}, <a/>
+    </div>
+  </div>
 </div>
+
+
+
+
+
+
+
+
 
 
