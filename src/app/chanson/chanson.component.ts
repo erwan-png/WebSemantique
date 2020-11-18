@@ -19,6 +19,8 @@ export interface Song{
 })
 export class ChansonComponent implements OnInit {
   url = 'http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org';
+  redirectGenreUrl = 'http://localhost:4200/recherche-genre/';
+  redirectArtisteUrl = 'http://localhost:4200/recherche-artiste/';
   nomChanson: string;
   chanson: Song;
 
