@@ -22,7 +22,7 @@ export class ChansonComponent implements OnInit {
   redirectGenreUrl = 'http://localhost:4200/recherche-genre/';
   redirectArtisteUrl = 'http://localhost:4200/recherche-artiste/';
   nomChanson: string;
-  chanson: Song;
+  chansons: Song[] = [];
 
   constructor(private route: ActivatedRoute,
               private httpClient: HttpClient) { }
@@ -69,7 +69,7 @@ export class ChansonComponent implements OnInit {
       if ((response as any).results.bindings[0].album !== undefined){
         albums = ((response as any).results.bindings[0].album.value).split('|');
       }
-      this.chanson = {
+      const chanson: Song = {
         name: name,
         duration: duration,
         bio: bio,
@@ -79,7 +79,7 @@ export class ChansonComponent implements OnInit {
         artists: artists,
         writers: writers
       };
-      console.log(this.chanson.relatedAlbum);
+      this.chansons.push(chanson);
     });
   }
 
