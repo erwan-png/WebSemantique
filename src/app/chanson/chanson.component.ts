@@ -98,29 +98,30 @@ export class ChansonComponent implements OnInit {
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(songRequest) + '&format=json').subscribe((response) => {
       if ((response as any).results.bindings.length === 0){
         this.router.navigate(['not-found']);
-      }
-      const responsesBindings = (response as any).results.bindings;
-      console.log(responsesBindings);
-      for (const responseBinding of responsesBindings){
-        const name = responseBinding.name.value;
-        const bio = (responseBinding.bio !== '') ? responseBinding.bio.value : null;
-        const artists = (responseBinding.artists.value !== '') ? responseBinding.artists.value.split('|') : null;
-        const date = (responseBinding.date !== undefined) ? responseBinding.date.value : null;
-        const duration = (responseBinding.duration !== undefined) ? responseBinding.duration.value : null;
-        const genres = (responseBinding.genres.value !== '') ? responseBinding.genres.value.split('|') : null;
-        const writers = (responseBinding.writers.value !== '') ? responseBinding.writers.value.split('|') : null;
-        const albums = (responseBinding.albums.value !== '') ?  responseBinding.albums.value.split('|') : null;
-        const chanson: Song = {
-          name: name,
-          duration: duration,
-          bio: bio,
-          albums: albums,
-          releaseDate: date,
-          genres: genres,
-          artists: artists,
-          writers: writers
-        };
-        this.chansons.push(chanson);
+      }else{
+        const responsesBindings = (response as any).results.bindings;
+        console.log(responsesBindings);
+        for (const responseBinding of responsesBindings){
+          const name = responseBinding.name.value;
+          const bio = (responseBinding.bio !== '') ? responseBinding.bio.value : null;
+          const artists = (responseBinding.artists.value !== '') ? responseBinding.artists.value.split('|') : null;
+          const date = (responseBinding.date !== undefined) ? responseBinding.date.value : null;
+          const duration = (responseBinding.duration !== undefined) ? responseBinding.duration.value : null;
+          const genres = (responseBinding.genres.value !== '') ? responseBinding.genres.value.split('|') : null;
+          const writers = (responseBinding.writers.value !== '') ? responseBinding.writers.value.split('|') : null;
+          const albums = (responseBinding.albums.value !== '') ?  responseBinding.albums.value.split('|') : null;
+          const chanson: Song = {
+            name: name,
+            duration: duration,
+            bio: bio,
+            albums: albums,
+            releaseDate: date,
+            genres: genres,
+            artists: artists,
+            writers: writers
+          };
+          this.chansons.push(chanson);
+        }
       }
     });
   }
