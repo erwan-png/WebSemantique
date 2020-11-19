@@ -70,7 +70,8 @@ export class GenreComponent implements OnInit {
       '}' +
       'FILTER(?name = "' + this.nomGenre + '"@en && lang(?bio)="en" && lang(?sOriginName )="en") .' +
       '}';
-    this.httpClient.get(this.url + '&query=' + encodeURIComponent(genreRequest) + '&format=json').subscribe((response) => {
+    this.httpClient.get(this.url + '&query=' + encodeURIComponent(genreRequest) + '&format=json')
+    .subscribe((response) => {
       const genreName = (response as any).results.bindings[0].name.value;
       const abstract = (response as any).results.bindings[0].bio.value;
       const subGenreName = ((response as any).results.bindings[0].subGenreName.value).split('|');

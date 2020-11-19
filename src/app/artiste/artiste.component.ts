@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -16,7 +16,6 @@ export interface Album {
 export interface Artiste {
   name: string;
   bio: string;
-  commentaire: string;
   nomNaissance: string;
   nbrEnfant: number;
   epouse: string;
@@ -28,7 +27,6 @@ export interface Artiste {
 export interface Band {
   name: string;
   bio: string;
-  commentaire: string;
   anneeDebut: Date;
   lieuOrigine: string;
   villeOrigine: string;
@@ -61,7 +59,8 @@ export class ArtisteComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private httpClient: HttpClient,
-              private sanitizer: DomSanitizer) {
+              private sanitizer: DomSanitizer,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -81,7 +80,8 @@ export class ArtisteComponent implements OnInit {
   }
   initialiserApplication() {
     /* Initializing variables and request */
-    this.nomArtiste = this.route.snapshot.params.nomArtiste;
+    const nomInitial = this.route.snapshot.params.nomArtiste;
+    this.nomArtiste = nomInitial;
 
     let nom: string[] = this.nomArtiste.split(' ');
     for(let mot of nom) {
@@ -104,70 +104,71 @@ export class ArtisteComponent implements OnInit {
     },
     (error) => console.log('Erreur : ' + error.message));
 
-    // Fetching artist personal data
-    const artisteRequete: string =
-        'select distinct ?artiste ?name ?bio ?comment ?anneedebut ?lieuorigine ?villeorigine ?nomNaissance '
-      + '?anneeNaissance ?nbenfants ?epouse GROUP_CONCAT(DISTINCT ?Genre_Music; SEPARATOR="|") AS ?genres '
-      + 'where {'
-      + '{'
-      + '?artiste a dbo:Band .'
-      + '?artiste foaf:name ?name .'
-      + '?artiste dbo:abstract ?bio .'
-      + '?artiste rdfs:comment ?comment.'
-      + '?artiste dbo:activeYearsStartYear ?anneedebut.'
-      + '?artiste dbo:genre ?Genre.'
-      + '?Genre rdfs:label ?Genre_Music.'
-      + 'FILTER(?name = "' + this.nomArtiste + '"@en && lang(?bio)="en" && lang(?comment)="en" && lang(?Genre_Music)="en" ).'
-      + 'optional{?artiste dbp:origin ?lieuorigine}.'
-      + 'optional{?artiste dbo:hometown ?ville .'
-      + '?ville foaf:name ?villeorigine .'
-      + 'FILTER(lang(?villeorigine)="en"). }.'
-      + '}'
-      + 'UNION '
-      + '{'
-      + '?artiste a dbo:MusicalArtist .'
-      + '?artiste foaf:name ?name .'
-      + '?artiste dbo:abstract ?bio .'
-      + '?artiste rdfs:comment ?comment.'
-      + '?artiste dbo:birthDate ?anneeNaissance .'
-      + '?album dbo:artist ?artiste.'
-      + '?album dbo:genre ?genre_album.'
-      + '?genre_album rdfs:label ?Genre_Music.'
-      + 'FILTER(?name = "' + this.nomArtiste + '"@en && lang(?bio)="en" && lang(?comment)="en" && lang(?Genre_Music)="en").'
-      + 'optional{?artiste dbo:birthName ?nomNaissance}.'
-      + 'optional{?artiste dbp:spouse ?epouse}.'
-      + 'optional{?artiste dbp:children ?nbenfants}.'
-      + '}'
-      + '}';
-
     // Deserialization artist data into variables
-    this.httpClient.get(this.url + '&query=' + encodeURIComponent(artisteRequete) + '&format=json').subscribe((response) => {
+    this.httpClient.get(this.url + '&query=' + encodeURIComponent(this.getRequete(this.nomArtiste)) + '&format=json').subscribe((response) => {
         const reponse = (response as any).results.bindings[0];
-        if(reponse?.anneedebut) {
-          this.band = {
-            name: reponse.name.value,
-            bio: reponse.bio.value,
-            commentaire: reponse.comment.value,
-            anneeDebut: reponse.anneedebut.value,
-            lieuOrigine: reponse.lieuorigine?reponse.lieuorigine.value:null,
-            villeOrigine: reponse.villeorigine?reponse.villeorigine.value:null,
-            genresMusicaux: reponse.genres.value.split('|')
-          };
-        } else if (reponse?.anneeNaissance) {
-          this.artiste = {
-            name: reponse.name.value,
-            bio: reponse.bio.value,
-            commentaire: reponse.comment.value,
-            nomNaissance: reponse.nomNaissance?reponse.nomNaissance.value:null,
-            nbrEnfant: reponse.nbenfants?reponse.nbenfants.value:null,
-            epouse: reponse.epouse?reponse.epouse.value:null,
-            anneeNaissance: reponse.anneeNaissance.value,
-            genresMusicaux: reponse.genres.value.split('|'),
-            image: reponse.image?reponse.image:null
-          };
+        if(reponse) {
+          const type = reponse?.labelType.value;
+          if(type === 'Band') {
+            this.band = {
+              name: reponse.name.value,
+              bio: reponse.bio.value,
+              anneeDebut: reponse.anneedebut.value,
+              lieuOrigine: reponse.lieuorigine?reponse.lieuorigine.value:null,
+              villeOrigine: reponse.villeorigine?reponse.villeorigine.value:null,
+              genresMusicaux: reponse.genres?.value.split('|')
+            };
+          } else if (type === 'musical artist') {
+            this.artiste = {
+              name: reponse.name.value,
+              bio: reponse.bio.value,
+              nomNaissance: reponse.nomNaissance?reponse.nomNaissance.value:null,
+              nbrEnfant: reponse.nbenfants?reponse.nbenfants.value:null,
+              epouse: reponse.epouse?reponse.epouse.value:null,
+              anneeNaissance: reponse.anneeNaissance.value,
+              genresMusicaux: reponse.genres?.value.split('|'),
+              image: reponse.image?reponse.image:null
+            };
+          }
+          this.pousuivreInitialisation();
+        } else {
+          this.nomArtiste = nomInitial;
+          this.httpClient.get(this.url + '&query=' + encodeURIComponent(this.getRequete(this.nomArtiste)) + '&format=json').subscribe((response_bis) => {
+            const reponse_bis = (response_bis as any).results.bindings[0];
+            if(reponse_bis) {
+              const type = reponse_bis?.labelType.value;
+              if(type === 'Band') {
+                this.band = {
+                  name: reponse_bis.name.value,
+                  bio: reponse_bis.bio.value,
+                  anneeDebut: reponse_bis.anneedebut.value,
+                  lieuOrigine: reponse_bis.lieuorigine?reponse_bis.lieuorigine.value:null,
+                  villeOrigine: reponse_bis.villeorigine?reponse_bis.villeorigine.value:null,
+                  genresMusicaux: reponse_bis.genres?.value.split('|')
+                };
+              } else if (type === 'musical artist') {
+                this.artiste = {
+                  name: reponse_bis.name.value,
+                  bio: reponse_bis.bio.value,
+                  nomNaissance: reponse_bis.nomNaissance?reponse_bis.nomNaissance.value:null,
+                  nbrEnfant: reponse_bis.nbenfants?reponse_bis.nbenfants.value:null,
+                  epouse: reponse_bis.epouse?reponse_bis.epouse.value:null,
+                  anneeNaissance: reponse_bis.anneeNaissance?.value,
+                  genresMusicaux: reponse_bis.genres?.value.split('|'),
+                  image: reponse_bis.image?reponse_bis.image:null
+                };
+              }
+              this.pousuivreInitialisation();
+            } else {
+              this.router.navigate(['not-found']);
+            }
+          });
         }
       }
     );
+  }
+
+  pousuivreInitialisation() {
 
     //Fetching associated band and artist
     const associationRequete: string = 
@@ -180,7 +181,7 @@ export class ArtisteComponent implements OnInit {
       + '?groupe foaf:name ?bandName .'
       + '?groupe dbo:associatedBand ?artisteAssocie .'
       + '?artisteAssocie foaf:name ?inputArtiste .'
-      + 'FILTER(?inputArtiste = "Katy Perry"@en).'
+      + 'FILTER(?inputArtiste = "'+ this.nomArtiste +'"@en).'
       + '}'
       + 'UNION'
       + '{'
@@ -188,7 +189,7 @@ export class ArtisteComponent implements OnInit {
       + '?artiste foaf:name ?nameAssociatedArtist .'
       + '?artiste dbo:associatedBand ?artisteAssocie .'
       + '?artisteAssocie foaf:name ?inputArtiste .'
-      + 'FILTER(?inputArtiste = "Katy Perry"@en).'
+      + 'FILTER(?inputArtiste = "'+ this.nomArtiste +'"@en).'
       + '}'
       + '}';
 
@@ -296,5 +297,46 @@ export class ArtisteComponent implements OnInit {
         });
       }
     });
+  }
+
+  getRequete(nomArtiste: string): string {
+    return 'select distinct ?artiste ?labelType ?name ?bio ?anneedebut ?lieuorigine ?villeorigine ?nomNaissance '
+    + '?anneeNaissance ?nbenfants ?epouse GROUP_CONCAT(DISTINCT ?Genre_Music; SEPARATOR="|") AS ?genres '
+    + 'where {'
+    + '{'
+    + '?artiste a dbo:Band .'
+    + '?artiste rdf:type ?typeAr .'
+    + '?typeAr rdfs:label ?labelType .'
+    + '?artiste foaf:name ?name .'
+    + '?artiste dbo:abstract ?bio .'
+    + '?artiste dbo:activeYearsStartYear ?anneedebut.'
+    + 'FILTER(?name = "' + nomArtiste + '"@en && ?labelType = "Band"@en && lang(?bio)="en" ).'
+    + 'optional {?artiste dbo:genre ?Genre.'
+    + '?Genre rdfs:label ?Genre_Music.'
+    + 'FILTER(lang(?Genre_Music)="en").}'
+    + 'optional{?artiste dbp:origin ?lieuorigine}.'
+    + 'optional{?artiste dbo:hometown ?ville .'
+    + '?ville foaf:name ?villeorigine .'
+    + 'FILTER(lang(?villeorigine)="en"). }.'
+    + '}'
+    + 'UNION '
+    + '{'
+    + '?artiste a dbo:MusicalArtist .'
+    + '?artiste rdf:type ?typeAr .'
+    + '?typeAr rdfs:label ?labelType .'
+    + '?artiste foaf:name ?name .'
+    + '?artiste dbo:abstract ?bio .'
+    + 'FILTER(?name = "' + nomArtiste + '"@en && ?labelType = "musical artist"@en && lang(?bio)="en").'
+    + 'optional{?artiste dbo:birthDate ?anneeNaissance .}.'
+    + 'optional{?artiste dbo:birthName ?nomNaissance}.'
+    + 'optional{?artiste dbp:spouse ?epouse}.'
+    + 'optional{?artiste dbp:children ?nbenfants}.'
+    + 'optional{?album a dbo:Album .'
+    + '?album dbo:artist ?artiste.'
+    + '?album dbo:genre ?genre_album.'
+    + '?genre_album rdfs:label ?Genre_Music.'
+    + 'FILTER(lang(?Genre_Music)="en")}'
+    + '}'
+    + '}';
   }
 } 

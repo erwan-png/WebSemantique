@@ -4,6 +4,7 @@ import { ArtisteComponent } from './artiste/artiste.component';
 import { RechercheComponent } from './recherche/recherche.component';
 import { GenreComponent } from './genre/genre.component';
 import {ChansonComponent} from './chanson/chanson.component';
+import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
 
 
 const routes: Routes = [
@@ -12,6 +13,8 @@ const routes: Routes = [
   { path: 'recherche-artiste/:nomArtiste', component: ArtisteComponent },
   { path: 'recherche-genre/:nomGenre', component: GenreComponent },
   { path: 'recherche-chanson/:nomChanson', component: ChansonComponent },
+  { path: 'not-found', component: FourOhFourComponent },
+  { path: '**', redirectTo: 'not-found' }
 ];
 
 @NgModule({

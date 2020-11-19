@@ -11,19 +11,19 @@
         <h2 [style.maxWidth.px]="320">Start year : {{band.anneeDebut}}</h2>
         <h2 [style.maxWidth.px]="320">{{band.lieuOrigine?'Origin place : '+band.lieuOrigine:''}}</h2>
         <h2 [style.maxWidth.px]="320">{{band.villeOrigine?'Hometown : '+band.villeOrigine:''}}</h2>
-        <h2 [style.maxWidth.px]="320">Genres : 
-          <h3 *ngFor="let g of band.genresMusicaux" [style.maxWidth.px]="300">
+        <h2 [style.maxWidth.px]="320">{{band.genresMusicaux[0]!==''? 'Genres :':''}} 
+          <h3 *ngFor="let g of band.genresMusicaux" [ngStyle]="{'max-width':'300px', 'margin-bottom':'-5px'}">
             <a [href]="'/recherche-genre/'+g">{{g}}</a>
-            {{artiste?.genresMusicaux.indexOf(g)!==artiste?.genresMusicaux.length-1?',':''}}
+            {{band?.genresMusicaux.indexOf(g)!==band?.genresMusicaux.length-1?',':''}}
           </h3>
         </h2>
       </div>
       <div *ngIf="artiste">
-        <h2 [style.maxWidth.px]="320">Birth name : {{artiste.nomNaissance}}</h2>
-        <h2 [style.maxWidth.px]="320">Birth date : {{artiste.anneeNaissance}}</h2>
+        <h2 [style.maxWidth.px]="320">{{artiste.nomNaissance? 'Birth name :' + artiste.nomNaissance:''}}</h2>
+        <h2 [style.maxWidth.px]="320">{{artiste.anneeNaissance? 'Birth date :' +artiste.anneeNaissance:''}}</h2>
         <h2 [style.maxWidth.px]="320">{{artiste.nbEnfant?artiste.nbEnfant + ' Children':''}}</h2>
         <h2 [style.maxWidth.px]="320">{{artiste.epouse?'Spouse : '+artiste.epouse:''}}</h2>
-        <h2 [style.maxWidth.px]="320">Genres : 
+        <h2 [style.maxWidth.px]="320">{{artiste.genresMusicaux[0]!==''? 'Genres :':''}} 
           <h3 *ngFor="let g of artiste.genresMusicaux" 
               [ngStyle]="{'max-width':'300px', 'margin-bottom':'-5px'}">
               <a [href]="'/recherche-genre/'+g">{{g}}</a>
