@@ -40,6 +40,7 @@ export class ChansonComponent implements OnInit {
       'GROUP_CONCAT(DISTINCT ?writers ; SEPARATOR="|") as ?writers \n' +
       'GROUP_CONCAT(DISTINCT ?albums ; SEPARATOR="|") as ?albums \n' +
       'where {\n' +
+      '{\n' +
       '?song a dbo:Song .\n' +
       '?song foaf:name ?name .\n' +
       '?song dbo:runtime ?duration .\n' +
@@ -64,19 +65,48 @@ export class ChansonComponent implements OnInit {
       '?w foaf:name ?writers .\n' +
       '}' +
       'FILTER(?name="' + this.nomChanson + '"@en && lang(?bio)="en") .\n' +
-      '}';
+      '}' +
+      'UNION\n' +
+      '{\n' +
+      '?song a dbo:Single .\n' +
+      '?song foaf:name ?name .\n' +
+      '?song dbo:runtime ?duration .\n' +
+      '?song dbo:abstract ?bio .\n' +
+      'optional{' +
+      '?song dbo:album ?al .' +
+      '?al foaf:name ?albums .' +
+      '}' +
+      'optional{' +
+      '?song dbo:releaseDate ?date .\n' +
+      '}' +
+      'optional{' +
+      '?song dbo:genre ?g .\n' +
+      '?g foaf:name ?genres .\n' +
+      '}' +
+      'optional{' +
+      '?song dbo:artist ?ar .\n' +
+      '?ar foaf:name ?artists . \n' +
+      '}' +
+      'optional{' +
+      '?song dbo:writer ?w .\n' +
+      '?w foaf:name ?writers .\n' +
+      '}' +
+      'FILTER(?name="' + this.nomChanson + '"@en && lang(?bio)="en") .\n' +
+      '}\n' +
+      '}\n';
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(songRequest) + '&format=json').subscribe((response) => {
       const responsesBindings = (response as any).results.bindings;
       console.log(responsesBindings);
       for (const responseBinding of responsesBindings){
         const name = responseBinding.name.value;
-        const bio = responseBinding.bio.value;
-        const artists = responseBinding.artists.value.split('|');
+        const bio = (responseBinding.bio !== '') ? responseBinding.bio.value : null;
+        const artists = (responseBinding.artists.value !== '') ? responseBinding.artists.value.split('|') : null;
         const date = (responseBinding.date !== undefined) ? responseBinding.date.value : null;
-        const duration = responseBinding.duration.value;
-        const genres = responseBinding.genres.value.split('|');
-        const writers = responseBinding.writers.value.split('|');
-        const albums = (responseBinding.albums !== undefined) ?  responseBinding.albums.value.split('|') : [];
+        const duration = (responseBinding.duration !== undefined) ? responseBinding.duration.value : null;
+        const genres = (responseBinding.genres.value !== '') ? responseBinding.genres.value.split('|') : null;
+        const writers = (responseBinding.writers.value !== '') ? responseBinding.writers.value.split('|') : null;
+        const albums = (responseBinding.albums.value !== '') ?  responseBinding.albums.value.split('|') : null;
+        console.log(artists);
         const chanson: Song = {
           name: name,
           duration: duration,
