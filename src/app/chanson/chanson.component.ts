@@ -106,7 +106,6 @@ export class ChansonComponent implements OnInit {
         const genres = (responseBinding.genres.value !== '') ? responseBinding.genres.value.split('|') : null;
         const writers = (responseBinding.writers.value !== '') ? responseBinding.writers.value.split('|') : null;
         const albums = (responseBinding.albums.value !== '') ?  responseBinding.albums.value.split('|') : null;
-        console.log(artists);
         const chanson: Song = {
           name: name,
           duration: duration,

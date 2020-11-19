@@ -339,4 +339,37 @@ export class ArtisteComponent implements OnInit {
     + '}'
     + '}';
   }
+
+  /*existeSurDBPedia(song: string):Promise<boolean> {
+    const songRequest =
+      'select distinct\n' +
+      '?name\n' +
+      '?duration\n' +
+      '?bio\n' +
+      'where {\n' +
+      '{\n' +
+      '?song a dbo:Song .\n' +
+      '?song foaf:name ?name .\n' +
+      '?song dbo:runtime ?duration .\n' +
+      '?song dbo:abstract ?bio .\n' +
+      'FILTER(?name="' + song + '"@en && lang(?bio)="en") .\n' +
+      '}' +
+      'UNION\n' +
+      '{\n' +
+      '?song a dbo:Single .\n' +
+      '?song foaf:name ?name .\n' +
+      '?song dbo:runtime ?duration .\n' +
+      '?song dbo:abstract ?bio .\n' +
+      'FILTER(?name="' + song + '"@en && lang(?bio)="en") .\n' +
+      '}\n' +
+      '}\n';
+    return this.httpClient.get(this.url + '&query=' + encodeURIComponent(songRequest) + '&format=json').toPromise()
+    .then((response) => {
+      const responsesBindings = (response as any).results.bindings;
+      if(responsesBindings)
+        return true;
+      else
+        return false;
+    });
+  }*/
 } 
