@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 
 export interface Song{
@@ -25,7 +25,8 @@ export class ChansonComponent implements OnInit {
   chansons: Song[] = [];
 
   constructor(private route: ActivatedRoute,
-              private httpClient: HttpClient) { }
+              private httpClient: HttpClient,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.nomChanson = this.route.snapshot.params.nomChanson;
@@ -95,6 +96,9 @@ export class ChansonComponent implements OnInit {
       '}\n' +
       '}\n';
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(songRequest) + '&format=json').subscribe((response) => {
+      if ((response as any).results.bindings.length === 0){
+        this.router.navigate(['not-found']);
+      }
       const responsesBindings = (response as any).results.bindings;
       console.log(responsesBindings);
       for (const responseBinding of responsesBindings){
