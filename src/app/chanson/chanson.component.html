@@ -3,19 +3,15 @@
   <h2 style="text-align: center">Duration {{chanson.duration}} s</h2>
   <h2 style="margin-left: 200px;margin-right: 200px">{{chanson.bio}}</h2>
 
-  <!-- Related albums -->
-  <div style="margin: 20px 200px;">
-    <span style="font-size: 20px">Related albums: </span>
-    <div *ngFor="let albumsName of chanson.relatedAlbum" style="display:inline-block;font-size: 18px">
-      {{albumsName}}
-    </div>
-  </div>
-
-  <!-- Genres -->
-  <div style="margin: 20px 200px;">
-    <span style="font-size: 20px">Genres: </span>
-    <div *ngFor="let genre of chanson.genres" style="display:inline-block;font-size: 18px">
-      <a href="{{this.redirectGenreUrl + genre}}">{{genre}}, </a>
+  <div *ngIf="chanson.genres">
+    <!-- Genres -->
+    <div style="margin: 20px 200px;">
+      <span style="font-size: 20px">Genres: </span>
+      <div *ngFor="let genre of chanson.genres" style="display:inline-block;font-size: 18px">
+        <a href="{{this.redirectGenreUrl + genre}}" [style.marginRight.px]="7">
+          {{(chanson.genres.indexOf(genre) == chanson.genres.length - 1) ? genre : genre + ", " }}
+        </a>
+      </div>
     </div>
   </div>
 
@@ -23,7 +19,7 @@
   <div style="margin: 20px 200px;">
     <span style="font-size: 20px">Artists: </span>
     <div *ngFor="let artist of chanson.artists" style="display:inline-block;font-size: 18px">
-      <a href="{{this.redirectArtisteUrl + artist}}">{{artist}}, </a>
+      <a href="{{this.redirectArtisteUrl + artist}}" [style.marginRight.px]="7">{{(chanson.artists.indexOf(artist) == chanson.artists.length - 1)? artist: artist +", "}} </a>
     </div>
   </div>
 
@@ -31,10 +27,24 @@
   <div style="margin: 20px 200px;">
     <span style="font-size: 20px">Writers: </span>
     <div *ngFor="let writer of chanson.writers" style="display:inline-block;font-size: 18px">
-      <a href="{{this.redirectArtisteUrl + writer}}">{{writer}}, </a>
+      <a href="{{this.redirectArtisteUrl + writer}}" [style.marginRight.px]="7">{{(chanson.writers.indexOf(writer) == chanson.writers.length - 1)?writer: writer +", "}}</a>
     </div>
   </div>
+
+  <!-- Albums -->
+  <div *ngIf="chanson.albums == []">
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Appear in albums: </span>
+    <div *ngFor="let album of chanson.albums" style="display:inline-block;font-size: 18px">
+      <span [style.marginRight.px]="7">{{(chanson.albums.indexOf(album) == chanson.albums.length - 1)?album: album +", "}}</span>
+    </div>
+  </div>
+  </div>
 </div>
+
+
+
+
 
 
 
