@@ -74,7 +74,7 @@ export class GenreComponent implements OnInit {
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(genreRequest) + '&format=json')
       .subscribe((response) => {
         console.log(response);
-        if ((response as any).results.bindings.length > 0) {
+        if ((response as any).results.bindings.length === 0) {
           this.router.navigate(['not-found']);
         } else {
           const genreName = (response as any).results.bindings[0].name.value;
