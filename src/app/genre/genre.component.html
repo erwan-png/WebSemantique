@@ -3,10 +3,13 @@
 
 
 <!-- Similar stylistic origin -->
-<div style="margin: 20px 200px;">
-  <span style="font-size: 20px">Similar Stylistic origin: </span>
-  <div *ngFor="let sOrigin of this.genre.stylisticOriginGenre" style="display:inline-block;font-size: 18px">
-    <a href="{{this.redirectGenreUrl+sOrigin}}">{{sOrigin}},</a>
+<div *ngIf="genre.stylisticOriginGenre">
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Similar Stylistic origin: </span>
+    <div *ngFor="let sOrigin of this.genre.stylisticOriginGenre" style="display:inline-block;font-size: 18px">
+      <a [style.marginRight.px]="7"
+         href="{{this.redirectGenreUrl+sOrigin}}">{{(this.genre.stylisticOriginGenre.indexOf(sOrigin) == this.genre.stylisticOriginGenre.length - 1) ? sOrigin : sOrigin + ", "}}</a>
+    </div>
   </div>
 </div>
 
@@ -15,47 +18,63 @@
   <div style="margin: 20px 200px;">
     <span style="font-size: 20px">Sub genre: </span>
     <div *ngFor="let subGenre of this.genre.subGenre" style="display:inline-block;font-size: 18px">
-      <a href="{{this.redirectGenreUrl+subGenre}}">{{subGenre}},</a>
+      <a [style.marginRight.px]="7"
+         href="{{this.redirectGenreUrl+subGenre}}">{{(genre.subGenre.indexOf(subGenre) == genre.subGenre.length - 1) ? subGenre : subGenre + ", "}}</a>
     </div>
   </div>
 </div>
 
 <!-- derivative genre -->
-<div style="margin: 20px 200px;">
-  <span style="font-size: 20px">Derivative genre: </span>
-  <div *ngFor="let derivativeGenre of this.genre.derivativeGenre" style="display:inline-block;font-size: 18px">
-    <a href="{{this.redirectGenreUrl+derivativeGenre}}">{{derivativeGenre}},</a>
+<div *ngIf="genre.derivativeGenre">
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Derivative genre: </span>
+    <div *ngFor="let derivativeGenre of this.genre.derivativeGenre" style="display:inline-block;font-size: 18px">
+      <a [style.marginRight.px]="7"
+         href="{{this.redirectGenreUrl+derivativeGenre}}">{{(genre.derivativeGenre.indexOf(derivativeGenre) == genre.derivativeGenre.length - 1) ? derivativeGenre : derivativeGenre + ", "}}</a>
+    </div>
   </div>
 </div>
 
 <!-- fusion genre -->
-<div style="margin: 20px 200px;">
-  <span style="font-size: 20px">Sub genre: </span>
-  <div *ngFor="let fusionGenre of this.genre.fusionGenre" style="display:inline-block;font-size: 18px">
-    <a href="{{this.redirectGenreUrl+fusionGenre}}">{{fusionGenre}},</a>
+<div *ngIf="genre.fusionGenre">
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Fusion genre: </span>
+    <div *ngFor="let fusionGenre of this.genre.fusionGenre" style="display:inline-block;font-size: 18px">
+      <a [style.marginRight.px]="7"
+         href="{{this.redirectGenreUrl+fusionGenre}}">{{(genre.fusionGenre.indexOf(fusionGenre) == genre.fusionGenre.length - 1) ? fusionGenre : fusionGenre + ", "}}</a>
+    </div>
   </div>
 </div>
 
 <!-- Similar artists -->
-<div style="margin: 20px 200px;">
-  <span style="font-size: 20px">Similar artists: </span>
-  <div *ngFor="let artist of listArtists" style="display:inline-block;font-size: 18px">
-    <a href="{{this.redirectArtisteUrl+artist}}">{{artist}},</a>
+<div *ngIf="listArtists">
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Similar artists: </span>
+    <div *ngFor="let artist of listArtists" style="display:inline-block;font-size: 18px">
+      <a [style.marginRight.px]="7"
+         href="{{this.redirectArtisteUrl+artist}}">{{(listArtists.indexOf(artist) == listArtists.length - 1) ? artist : artist + ", "}}</a>
+    </div>
   </div>
 </div>
 
 <!-- Similar bands -->
-<div style="margin: 20px 200px;">
-  <span style="font-size: 20px">Similar bands: </span>
-  <div *ngFor="let band of listBands" style="display:inline-block;font-size: 18px">
-    <a href="{{this.redirectArtisteUrl+band}}">{{band}},</a>
+<div *ngIf="listBands">
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Similar bands: </span>
+    <div *ngFor="let band of listBands" style="display:inline-block;font-size: 18px">
+      <a [style.marginRight.px]="7"
+         href="{{this.redirectArtisteUrl+band}}">{{(listBands.indexOf(band) == listBands.length - 1) ? band : band + ", "}}</a>
+    </div>
   </div>
 </div>
 
 <!-- Similar songs -->
-<div style="margin: 20px 200px;">
-  <span style="font-size: 20px">Similar songs: </span>
-  <div *ngFor="let song of listSongs" style="display:inline-block;font-size: 18px">
-    <a href="{{this.redirectSongUrl+song}}">{{song}},</a>
+<div *ngIf="listSongs">
+  <div style="margin: 20px 200px;">
+    <span style="font-size: 20px">Similar songs: </span>
+    <div *ngFor="let song of listSongs" style="display:inline-block;font-size: 18px">
+      <a [style.marginRight.px]="7"
+         href="{{this.redirectSongUrl+song}}">{{(listSongs.indexOf(song) == listSongs.length - 1) ? song : song + ", "}}</a>
+    </div>
   </div>
 </div>

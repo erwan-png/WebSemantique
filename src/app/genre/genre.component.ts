@@ -21,10 +21,10 @@ export class GenreComponent implements OnInit {
   genre: Genre = {
     name: '',
     bio: '',
-    derivativeGenre: [],
-    subGenre: [],
-    fusionGenre: [],
-    stylisticOriginGenre: []
+    derivativeGenre: null,
+    subGenre: null,
+    fusionGenre: null,
+    stylisticOriginGenre: null
   };
   redirectGenreUrl = 'http://localhost:4200/recherche-genre/';
   redirectSongUrl = 'http://localhost:4200/recherche-chanson/';
@@ -72,13 +72,14 @@ export class GenreComponent implements OnInit {
       '}';
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(genreRequest) + '&format=json')
     .subscribe((response) => {
+      console.log(response);
       const genreName = (response as any).results.bindings[0].name.value;
       const abstract = (response as any).results.bindings[0].bio.value;
-      const subGenreName = ((response as any).results.bindings[0].subGenreName.value).split('|');
-      const dGenreName = ((response as any).results.bindings[0].dGenreName.value).split('|');
-      const sOriginName = ((response as any).results.bindings[0].sOriginName.value).split('|');
-      const fGenreName = ((response as any).results.bindings[0].fGenreName.value).split('|');
-      console.log(subGenreName, dGenreName, sOriginName, fGenreName);
+      const subGenreName = ((response as any).results.bindings[0].subGenreName.value !== '') ? (response as any).results.bindings[0].subGenreName.value.split('|') : null;
+      const dGenreName = ((response as any).results.bindings[0].dGenreName.value !== '') ? (response as any).results.bindings[0].dGenreName.value.split('|') : null;
+      const sOriginName = ((response as any).results.bindings[0].sOriginName.value !== '') ? (response as any).results.bindings[0].sOriginName.value.split('|') : null;
+      const fGenreName = ((response as any).results.bindings[0].fGenreName.value !== '') ? (response as any).results.bindings[0].fGenreName.value.split('|') : null;
+      console.log(subGenreName);
       this.genre = {
         name: genreName,
         bio: abstract,
