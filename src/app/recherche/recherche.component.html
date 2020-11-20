@@ -11,7 +11,7 @@
                 </mat-radio-group> <br>
             </div>
             <div class="entree">
-                <label for="entree" class="label-recherche"> Entrez le nom d'un artiste :</label> <br>
+                <label for="entree" class="label-recherche"> {{getLabel()}}</label> <br>
                 <input id="entree" type="text" name="entreeUtilisateur" class="input" ngModel required>
                 <button mat-raised-button color="primary" type="submit">
                     Rechercher

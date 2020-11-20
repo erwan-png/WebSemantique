@@ -27,4 +27,13 @@ export class RechercheComponent implements OnInit {
       this.router.navigate(['recherche-chanson', texte] );
   }
 
+  getLabel() : string{
+    if(this.typeRecherche == 'artiste')
+      return 'Entrez le nom d\'un artiste :';
+    else if(this.typeRecherche == 'genre')
+      return 'Cherchez un genre de musique :';
+    else if(this.typeRecherche == 'chanson')
+      return 'Cherchez une chanson :';
+  }
+
 }
