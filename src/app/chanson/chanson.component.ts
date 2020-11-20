@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 
 export interface Song{
@@ -25,7 +25,8 @@ export class ChansonComponent implements OnInit {
   chansons: Song[] = [];
 
   constructor(private route: ActivatedRoute,
-              private httpClient: HttpClient) { }
+              private httpClient: HttpClient,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.nomChanson = this.route.snapshot.params.nomChanson;
@@ -95,28 +96,32 @@ export class ChansonComponent implements OnInit {
       '}\n' +
       '}\n';
     this.httpClient.get(this.url + '&query=' + encodeURIComponent(songRequest) + '&format=json').subscribe((response) => {
-      const responsesBindings = (response as any).results.bindings;
-      console.log(responsesBindings);
-      for (const responseBinding of responsesBindings){
-        const name = responseBinding.name.value;
-        const bio = (responseBinding.bio !== '') ? responseBinding.bio.value : null;
-        const artists = (responseBinding.artists.value !== '') ? responseBinding.artists.value.split('|') : null;
-        const date = (responseBinding.date !== undefined) ? responseBinding.date.value : null;
-        const duration = (responseBinding.duration !== undefined) ? responseBinding.duration.value : null;
-        const genres = (responseBinding.genres.value !== '') ? responseBinding.genres.value.split('|') : null;
-        const writers = (responseBinding.writers.value !== '') ? responseBinding.writers.value.split('|') : null;
-        const albums = (responseBinding.albums.value !== '') ?  responseBinding.albums.value.split('|') : null;
-        const chanson: Song = {
-          name: name,
-          duration: duration,
-          bio: bio,
-          albums: albums,
-          releaseDate: date,
-          genres: genres,
-          artists: artists,
-          writers: writers
-        };
-        this.chansons.push(chanson);
+      if ((response as any).results.bindings.length === 0){
+        this.router.navigate(['not-found']);
+      }else{
+        const responsesBindings = (response as any).results.bindings;
+        console.log(responsesBindings);
+        for (const responseBinding of responsesBindings){
+          const name = responseBinding.name.value;
+          const bio = (responseBinding.bio !== '') ? responseBinding.bio.value : null;
+          const artists = (responseBinding.artists.value !== '') ? responseBinding.artists.value.split('|') : null;
+          const date = (responseBinding.date !== undefined) ? responseBinding.date.value : null;
+          const duration = (responseBinding.duration !== undefined) ? responseBinding.duration.value : null;
+          const genres = (responseBinding.genres.value !== '') ? responseBinding.genres.value.split('|') : null;
+          const writers = (responseBinding.writers.value !== '') ? responseBinding.writers.value.split('|') : null;
+          const albums = (responseBinding.albums.value !== '') ?  responseBinding.albums.value.split('|') : null;
+          const chanson: Song = {
+            name: name,
+            duration: duration,
+            bio: bio,
+            albums: albums,
+            releaseDate: date,
+            genres: genres,
+            artists: artists,
+            writers: writers
+          };
+          this.chansons.push(chanson);
+        }
       }
     });
   }
