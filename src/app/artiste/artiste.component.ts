@@ -125,7 +125,7 @@ export class ArtisteComponent implements OnInit {
               nomNaissance: reponse.nomNaissance?reponse.nomNaissance.value:null,
               nbrEnfant: reponse.nbenfants?reponse.nbenfants.value:null,
               epouse: reponse.epouse?reponse.epouse.value:null,
-              anneeNaissance: reponse.anneeNaissance.value,
+              anneeNaissance: reponse.anneeNaissance?.value,
               genresMusicaux: reponse.genres?.value.split('|'),
               image: reponse.image?reponse.image:null
             };
